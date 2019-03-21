@@ -18,8 +18,8 @@ public class ThSpaziLetti extends Thread {
     }
 
     public void run() {
-        for (int i = 0; i < ptrDati.vect.size(); i++) {
-            if (ptrDati.vect.get(i) == ' ') {
+        for (int i = 0; i < ptrDati.getVect().size(); i++) {
+            if (ptrDati.getVect().get(i) == ' ') {
                 ptrDati.incNumSpaziLetti();
             }
         }

@@ -23,8 +23,11 @@ public class ThVisualizza extends Thread {
         int numPuntiL = ptrDati.getNumPuntiLetti();
         int numSpaziL = ptrDati.getNumSpaziLetti();
 
-        for (int i = 0; i < ptrDati.vect.size(); i++) {
-            if (numPuntiI != ptrDati.getNumPuntiInseriti()) {
+        for (int i = 0; i < ptrDati.getVect().size(); i++) {
+            if (numPuntiI != ptrDati.getNumPuntiInseriti()
+                    && numSpaziI != ptrDati.getNumSpaziInseriti()
+                    && numPuntiL != ptrDati.getNumPuntiLetti()
+                    && numSpaziL != ptrDati.getNumSpaziLetti()) {
                 System.out.println(ptrDati.toString());
             }
         }
