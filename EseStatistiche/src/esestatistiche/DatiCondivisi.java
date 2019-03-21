@@ -18,10 +18,24 @@ public class DatiCondivisi {
     private int numSpaziLetti;
     private int numPuntiInseriti;
     private int numPuntiLetti;
+
+    public Vector<Character> getVect() {
+        return vect;
+    }
+
+    public Semaphore getSemGenera() {
+        return semGenera;
+    }
+
+    public Semaphore getSemVisualizza() {
+        return semVisualizza;
+    }
     private int numCaratteri;
+    private Semaphore semGenera;
+    private Semaphore semVisualizza;
+    private Semaphore semPunti;                                                       
     private Semaphore semSpazi;
-    private Semaphore semPunti;
-    Vector<Character> vect = new Vector<Character>();
+    private Vector<Character> vect = new Vector<Character>();
 
 //    public DatiCondivisi() {
 //        numSpaziInseriti = 0;
@@ -36,8 +50,10 @@ public class DatiCondivisi {
         numSpaziLetti = 0;
         numPuntiLetti = 0;
         numPuntiInseriti = 0;
-        semSpazi = new Semaphore(0);
+        semGenera = new Semaphore(1);
+        semVisualizza = new Semaphore(0);
         semPunti = new Semaphore(0);
+        semSpazi = new Semaphore(0);
     }
 
     public int getNumCaratteri() {
@@ -103,7 +119,8 @@ public class DatiCondivisi {
         ris = "Punti inseriti: " + numPuntiInseriti
                 + "Spazi inseriti: " + numSpaziInseriti
                 + "Punti letti: " + numPuntiLetti
-                + "Spazi letti: " + numSpaziLetti;
+                + "Spazi letti: " + numSpaziLetti
+                + "\n------------------------------------";
         return ris;
     }
 }
