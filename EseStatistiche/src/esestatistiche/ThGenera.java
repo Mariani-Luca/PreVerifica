@@ -24,17 +24,23 @@ public class ThGenera extends Thread {
     public void run() {
         String s = "ABCDEFGHIJKLMNOPQRSTUVWXYZ. ";
         int lung = s.length();
-        for (int i = 0; i < ptrDati.getNumCaratteri(); i++) {
-            Random rn = new Random();
-            try {
-                ptrDati.getSemGenera().acquire();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ThGenera.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            ptrDati.addChar(s.charAt(rn.nextInt(lung)));
-            
-            ptrDati.getSemGenera().release();
-        }
+        int caratteriDaGenerare = ptrDati.getNumCaratteri();
+        Random rn = new Random();
 
+        while (caratteriDaGenerare > 0) {
+            
+            ptrDati.getSemPuntiLetti().acquireUninterruptibly();
+            ptrDati.getSemSpaziLetti().acquireUninterruptibly();
+            
+            ptrDati.getVect().clear(); //pulisce il vettore dopo essersi accertato che abbia letto
+            
+            for (int i = 0; i < 10 && caratteriDaGenerare > 0; i++) {
+                caratteriDaGenerare--;
+                ptrDati.addChar(s.charAt(rn.nextInt(lung)));
+            }
+            
+            ptrDati.getSemPuntiGenera().release();
+            ptrDati.getSemSpaziGenera().release();
+        }
     }
 }

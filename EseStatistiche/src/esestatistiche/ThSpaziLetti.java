@@ -5,6 +5,9 @@
  */
 package esestatistiche;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author mariani_luca
@@ -18,10 +21,21 @@ public class ThSpaziLetti extends Thread {
     }
 
     public void run() {
-        for (int i = 0; i < ptrDati.getVect().size(); i++) {
-            if (ptrDati.getVect().get(i) == ' ') {
-                ptrDati.incNumSpaziLetti();
+
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+
+                ptrDati.getSemSpaziGenera().acquire();
+
+                for (int i = 0; i < ptrDati.getVect().size(); i++) {
+                    if (ptrDati.getVect().get(i) == ' ') {
+                        ptrDati.incNumSpaziLetti();
+                    }
+                }
+
+                ptrDati.getSemSpaziLetti().release();
             }
+        } catch (InterruptedException ex) {
         }
     }
 }

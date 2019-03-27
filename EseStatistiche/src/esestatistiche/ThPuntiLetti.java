@@ -5,6 +5,9 @@
  */
 package esestatistiche;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author mariani_luca
@@ -18,10 +21,20 @@ public class ThPuntiLetti extends Thread {
     }
 
     public void run() {
-        for (int i = 0; i < ptrDati.getVect().size(); i++) {
-            if (ptrDati.getVect().get(i) == '.') {
-                ptrDati.incNumPuntiLetti();
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                ptrDati.getSemPuntiGenera().acquire();
+
+                for (int i = 0; i < ptrDati.getVect().size(); i++) {
+                    if (ptrDati.getVect().get(i) == '.') {
+                        ptrDati.incNumPuntiLetti();
+                    }
+                }
+
+                ptrDati.getSemPuntiLetti().release();
             }
+        } catch (InterruptedException ex) {
         }
+
     }
 }

@@ -19,107 +19,122 @@ public class DatiCondivisi {
     private int numPuntiInseriti;
     private int numPuntiLetti;
 
-    public Vector<Character> getVect() {
-        return vect;
-    }
-
-    public Semaphore getSemGenera() {
-        return semGenera;
-    }
-
-    public Semaphore getSemVisualizza() {
-        return semVisualizza;
-    }
     private int numCaratteri;
-    private Semaphore semGenera;
-    private Semaphore semVisualizza;
-    private Semaphore semPunti;                                                       
-    private Semaphore semSpazi;
+
+    private Semaphore semVisualizzato;
+    private Semaphore semDaVisualizzare;
+    private Semaphore semPuntiGenera;
+    private Semaphore semSpaziGenera;
+    private Semaphore semPuntiLetti;
+    private Semaphore semSpaziLetti;
+
     private Vector<Character> vect = new Vector<Character>();
 
-//    public DatiCondivisi() {
-//        numSpaziInseriti = 0;
-//        numSpaziLetti = 0;
-//        numPuntiLetti = 0;
-//        numPuntiInseriti = 0;
-//        numCaratteri = 0;
-//    }
     public DatiCondivisi(int numCaratteri) {
         this.numCaratteri = numCaratteri;
+
         numSpaziInseriti = 0;
         numSpaziLetti = 0;
         numPuntiLetti = 0;
         numPuntiInseriti = 0;
-        semGenera = new Semaphore(1);
-        semVisualizza = new Semaphore(0);
-        semPunti = new Semaphore(0);
-        semSpazi = new Semaphore(0);
+
+        semDaVisualizzare = new Semaphore(0);
+        semVisualizzato = new Semaphore(0);
+
+        semPuntiGenera = new Semaphore(1);
+        semSpaziGenera = new Semaphore(1);
+        semSpaziLetti = new Semaphore(0);
+        semPuntiLetti = new Semaphore(0);
     }
 
-    public int getNumCaratteri() {
+    public Semaphore getSemVisualizzato() {
+        return semVisualizzato;
+    }
+
+    public Semaphore getSemPuntiGenera() {
+        return semPuntiGenera;
+    }
+
+    public Semaphore getSemSpaziGenera() {
+        return semSpaziGenera;
+    }
+
+    public Semaphore getSemPuntiLetti() {
+        return semPuntiLetti;
+    }
+
+    public Semaphore getSemSpaziLetti() {
+        return semSpaziLetti;
+    }
+
+    public synchronized Vector<Character> getVect() {
+        return vect;
+    }
+
+    public Semaphore getSemDaVisualizzare() {
+        return semDaVisualizzare;
+    }
+
+    public synchronized int getNumCaratteri() {
         return numCaratteri;
     }
 
-    public Semaphore getSemSpazi() {
-        return semSpazi;
-    }
-
-    public Semaphore getSemPunti() {
-        return semPunti;
-    }
-
-    public int getNumPuntiInseriti() {
+    public synchronized int getNumPuntiInseriti() {
         return numPuntiInseriti;
     }
 
-    public int getNumSpaziInseriti() {
+    public synchronized int getNumSpaziInseriti() {
         return numSpaziInseriti;
     }
 
-    public int getNumSpaziLetti() {
+    public synchronized int getNumSpaziLetti() {
         return numSpaziLetti;
     }
 
-    public int getNumPuntiLetti() {
+    public synchronized int getNumPuntiLetti() {
         return numPuntiLetti;
     }
 
     public void incNumSpaziLetti() {
         numSpaziLetti++;
+        semDaVisualizzare.release();                //segnalo che devo visualizzare
+        semVisualizzato.acquireUninterruptibly();   //aspetto che visualizzi
     }
 
     public void incNumPuntiLetti() {
         numPuntiLetti++;
+        semDaVisualizzare.release();                //segnalo che devo visualizzare
+        semVisualizzato.acquireUninterruptibly();   //aspetto che visualizzi
     }
 
     public void incNumSpaziInseriti() {
         numSpaziInseriti++;
+        semDaVisualizzare.release();                //segnalo che devo visualizzare
+        semVisualizzato.acquireUninterruptibly();   //aspetto che visualizzi
     }
 
     public void incNumPuntiInseriti() {
         numPuntiInseriti++;
+        semDaVisualizzare.release();                //segnalo che devo visualizzare
+        semVisualizzato.acquireUninterruptibly();   //aspetto che visualizzi
     }
 
     public void addChar(char carattere) {
-        contaCaratteriExtra(carattere);
-        vect.add(carattere);
-    }
-
-    public void contaCaratteriExtra(char carattere) {
         if (carattere == ' ') {
             incNumSpaziInseriti();
         }
         if (carattere == '.') {
             incNumPuntiInseriti();
         }
+        vect.add(carattere);
     }
 
-    public String toString() {
+    public synchronized String toString() {
         String ris = "";
         ris = "Punti inseriti: " + numPuntiInseriti
-                + "Spazi inseriti: " + numSpaziInseriti
-                + "Punti letti: " + numPuntiLetti
-                + "Spazi letti: " + numSpaziLetti
+                + "\nSpazi inseriti: " + numSpaziInseriti
+                + "\nPunti letti: " + numPuntiLetti
+                + "\nSpazi letti: " + numSpaziLetti
                 + "\n------------------------------------";
         return ris;
     }

@@ -5,6 +5,9 @@
  */
 package esestatistiche;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author mariani_luca
@@ -18,18 +21,17 @@ public class ThVisualizza extends Thread {
     }
 
     public void run() {
-        int numPuntiI = ptrDati.getNumPuntiInseriti();
-        int numSpaziI = ptrDati.getNumSpaziInseriti();
-        int numPuntiL = ptrDati.getNumPuntiLetti();
-        int numSpaziL = ptrDati.getNumSpaziLetti();
 
-        for (int i = 0; i < ptrDati.getVect().size(); i++) {
-            if (numPuntiI != ptrDati.getNumPuntiInseriti()
-                    && numSpaziI != ptrDati.getNumSpaziInseriti()
-                    && numPuntiL != ptrDati.getNumPuntiLetti()
-                    && numSpaziL != ptrDati.getNumSpaziLetti()) {
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                ptrDati.getSemDaVisualizzare().acquire();
+
                 System.out.println(ptrDati.toString());
+
+                ptrDati.getSemVisualizzato().release();
             }
+        } catch (InterruptedException ex) {
         }
     }
 }
+
